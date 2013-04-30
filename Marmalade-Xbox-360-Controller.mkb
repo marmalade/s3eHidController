@@ -1,0 +1,25 @@
+#!/usr/bin/env mkb
+files
+{
+    Marmalade-Xbox-360-Controller.cpp
+}
+
+options
+{
+    strict
+}
+
+subprojects
+{
+    iwgx
+	GamePadExtension\GamePad
+}
+
+deployments
+{
+}
+
+includepath
+{
+    GamePadExtension
+}

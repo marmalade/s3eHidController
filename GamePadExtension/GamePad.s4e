@@ -1,0 +1,65 @@
+include:
+
+#include <s3eTypes.h>
+
+functions:
+
+// Returns TRUE if the controller is connected
+bool GamePad_IsConnected() false
+
+// Call this once per frame to update the game-pad
+bool GamePad_Update(float dt) false
+
+// Returns value of Stick 1, X Axis between -1.0 and 1.0
+float GamePad_GetStick1XAxis() 0
+
+// Returns value of Stick 1, Y Axis between -1.0 and 1.0
+float GamePad_GetStick1YAxis() 0
+
+// Returns value of Stick 2, X Axis between -1.0 and 1.0
+float GamePad_GetStick2XAxis() 0
+
+// Returns value of Stick 2, Y Axis between -1.0 and 1.0
+float GamePad_GetStick2YAxis() 0
+
+// Returns value of Left Analog Trigger Button where 0.0 is not depressed and 1.0 is fully depressed
+float GamePad_GetLeftTrigger() 0
+
+// Returns value of Right Analog Trigger Button where 0.0 is not depressed and 1.0 is fully depressed
+float GamePad_GetRightTrigger() 0
+
+// Returns value of Button X or Square
+bool GamePad_GetButtonX() false
+
+// Returns value of Button Y or Triangle
+bool GamePad_GetButtonY() false
+
+// Returns value of Button A or Cross
+bool GamePad_GetButtonA() false
+
+// Returns value of Button B or Circle
+bool GamePad_GetButtonB() false
+
+// Returns value of DPAD Left button
+bool GamePad_GetButtonDPadLeft() false
+
+// Returns value of DPAD Right button
+bool GamePad_GetButtonDPadRight() false
+
+// Returns value of DPAD Up button
+bool GamePad_GetButtonDPadUp() false
+
+// Returns value of DPAD Down button
+bool GamePad_GetButtonDPadDown() false
+
+// Returns value of Left Shoulder button
+bool GamePad_GetButtonLShoulderDown() false
+
+// Returns value of Right Shoulder button
+bool GamePad_GetButtonRShoulderDown() false
+
+// Returns value of Start button
+bool GamePad_GetButtonStart() false
+
+// Returns value of Select button
+bool GamePad_GetButtonSelect() false
