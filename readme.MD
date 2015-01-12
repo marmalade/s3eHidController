@@ -3,9 +3,9 @@ s3eHidController
 This extension for Marmalade allows you to read input such as DPad, A/B/X/Y
 buttons & analog stick values from a "HID" controller on PC or Mac.
 
-A HID controller might be connected via USB, wifi or Bluetooth.
+A HID controller might be connected via USB or Bluetooth.
 Typically you need to install drivers on your machine, though many controllers
-will use generic dirvers or Windows will install them for you.
+will use generic drivers or Windows will install them for you.
 
 NB: The keys/axis may not be mapped to the correct values for some controllers!
 
@@ -17,10 +17,10 @@ Currently this extension has mappings for:
   such as MotionJoy.
 
 The Windows extension uses the older 7.1.0 WDK (Windows Driver Kit). If you
-want to edit/rebuild, you'll need to install that (license doesn't let you
+want to edit/rebuild, you'll need to install that (license didn't let me
 redistribute). That supports XP and newer.
 
-Status 12/01/2015: I'm renamed and am currently heavily refactoring this
+Status 12/01/2015: I've renamed and am currently heavily refactoring this
 extension. I've checked in built libs. The checked in version works with
 360 gamepad on Windows 8 at least. Ouya pad works but key mappings are wrong.
 Not tested or build on Mac yet but likely to work.
@@ -68,4 +68,3 @@ Credit where it's due!
 - Mac support provided by Halfbot.com (M. Samuel)
 - Refactoring, rename and some tweeks: nickchops (Nick Smith)
 - Wrapper code utilized from: https://github.com/derekvanvliet/Xbox360ControllerManager.git
-  as well.
