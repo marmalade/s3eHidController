@@ -5,61 +5,61 @@ include:
 functions:
 
 // Returns TRUE if the controller is connected
-bool GamePad_IsConnected() false
+bool s3eHidControllerIsConnected() false
 
 // Call this once per frame to update the game-pad
-bool GamePad_Update(float dt) false
+bool s3eHidControllerUpdate(float dt) false
 
 // Returns value of Stick 1, X Axis between -1.0 and 1.0
-float GamePad_GetStick1XAxis() 0
+float s3eHidControllerGetStick1XAxis() 0
 
 // Returns value of Stick 1, Y Axis between -1.0 and 1.0
-float GamePad_GetStick1YAxis() 0
+float s3eHidControllerGetStick1YAxis() 0
 
 // Returns value of Stick 2, X Axis between -1.0 and 1.0
-float GamePad_GetStick2XAxis() 0
+float s3eHidControllerGetStick2XAxis() 0
 
 // Returns value of Stick 2, Y Axis between -1.0 and 1.0
-float GamePad_GetStick2YAxis() 0
+float s3eHidControllerGetStick2YAxis() 0
 
 // Returns value of Left Analog Trigger Button where 0.0 is not depressed and 1.0 is fully depressed
-float GamePad_GetLeftTrigger() 0
+float s3eHidControllerGetLeftTrigger() 0
 
 // Returns value of Right Analog Trigger Button where 0.0 is not depressed and 1.0 is fully depressed
-float GamePad_GetRightTrigger() 0
+float s3eHidControllerGetRightTrigger() 0
 
 // Returns value of Button X or Square
-bool GamePad_GetButtonX() false
+bool s3eHidControllerGetButtonX() false
 
 // Returns value of Button Y or Triangle
-bool GamePad_GetButtonY() false
+bool s3eHidControllerGetButtonY() false
 
 // Returns value of Button A or Cross
-bool GamePad_GetButtonA() false
+bool s3eHidControllerGetButtonA() false
 
 // Returns value of Button B or Circle
-bool GamePad_GetButtonB() false
+bool s3eHidControllerGetButtonB() false
 
 // Returns value of DPAD Left button
-bool GamePad_GetButtonDPadLeft() false
+bool s3eHidControllerGetButtonDPadLeft() false
 
 // Returns value of DPAD Right button
-bool GamePad_GetButtonDPadRight() false
+bool s3eHidControllerGetButtonDPadRight() false
 
 // Returns value of DPAD Up button
-bool GamePad_GetButtonDPadUp() false
+bool s3eHidControllerGetButtonDPadUp() false
 
 // Returns value of DPAD Down button
-bool GamePad_GetButtonDPadDown() false
+bool s3eHidControllerGetButtonDPadDown() false
 
 // Returns value of Left Shoulder button
-bool GamePad_GetButtonLShoulderDown() false
+bool s3eHidControllerGetButtonLShoulderDown() false
 
 // Returns value of Right Shoulder button
-bool GamePad_GetButtonRShoulderDown() false
+bool s3eHidControllerGetButtonRShoulderDown() false
 
 // Returns value of Start button
-bool GamePad_GetButtonStart() false
+bool s3eHidControllerGetButtonStart() false
 
 // Returns value of Select button
-bool GamePad_GetButtonSelect() false
+bool s3eHidControllerGetButtonSelect() false

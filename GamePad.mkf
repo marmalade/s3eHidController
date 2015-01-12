@@ -1,0 +1,4 @@
+# Legacy Subproject for GamePad extension.
+# Renamed and refactored into s3eHidController extension.
+
+subproject s3eHidController

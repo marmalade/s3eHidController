@@ -1,0 +1,14 @@
+.DS\_Store
+.DS_Store
+*.sw?
+*.mobileprovision
+build_*
+**/build_temp/**
+**/data-ram/**
+**/resources-ram/**
+**/build_temp/**
+**/resources-ram/**
+**/project_*
+**development.icf
+**/stamp/**
+**iwtrace.txt
