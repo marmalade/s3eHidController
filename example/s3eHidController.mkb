@@ -1,0 +1,20 @@
+#!/usr/bin/env mkb
+files
+{
+    s3eHidController.cpp
+}
+
+options
+{
+    strict
+}
+
+subprojects
+{
+    iwgx
+	s3eHidController
+}
+
+deployments
+{
+}

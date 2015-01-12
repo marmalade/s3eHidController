@@ -1,5 +1,5 @@
 /*
- * windows-specific implementation of the GamePad extension.
+ * windows-specific implementation of the s3eHidController extension.
  * Add any platform-specific functionality here.
  */
 /*
@@ -10,8 +10,8 @@
 #define _USE_MATH_DEFINES
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "GamePad_internal.h"
-#include <IwDebug.h>
+#include "s3eHidController_internal.h"
+#include "IwDebug.h"
 
 #include <Windows.h>
 #include <tchar.h>
@@ -261,6 +261,8 @@ static void EnumerateDevices()
                 deviceInfo.hid.usUsagePage, 
                 deviceInfo.hid.usUsage,
                 &(wcDeviceName[0]));
+
+            IwDebugTraceLinePrintf("360pad: %d, %d", deviceInfo.hid.dwVendorId, deviceInfo.hid.dwProductId);
             
             delete[] wcDeviceName;
         }
@@ -277,13 +279,14 @@ static LRESULT CALLBACK WindowProc_InputOnly(HWND hWnd, UINT msg, WPARAM wParam,
             //
             // Register for joystick devices
             //
+            // TODO: this is just for logging - doesnt actually do anything in release
             EnumerateDevices();            
 
             // See USB Serial BUS HID Usage Tables (http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf) for more info
             RAWINPUTDEVICE rid;
             const USHORT usageJoystick = 4;
             const USHORT usageGamePad = 5;
-            USHORT usageToAttempt = usageGamePad;
+            USHORT usageToAttempt = usageGamePad; //todo: not used!
 
             // Try game-pad first
             rid.usUsagePage = 1;
@@ -295,17 +298,17 @@ static LRESULT CALLBACK WindowProc_InputOnly(HWND hWnd, UINT msg, WPARAM wParam,
             {
                 // Try usage joystick next...if no game-pad found...this is for Logitech compatibility
                 rid.usUsage = usageJoystick;
-                IwDebugTraceLinePrintf("%s: WM_CREATE: RegisterRawInputDevices with usUsage %d failed, trying %d!\n", __FUNCTION__, usageGamePad, usageJoystick);
+                IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices with usUsage %d failed, trying %d!\n", __FUNCTION__, usageGamePad, usageJoystick));
                 
                 if(!RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
                 {
-                    IwError(("%s: WM_CREATE: RegisterRawInputDevices returned -1...attempted both %d and %d usages :(\n", __FUNCTION__, usageGamePad, usageJoystick));
+                    IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices returned -1...attempted both %d and %d usages :(\n", __FUNCTION__, usageGamePad, usageJoystick));
                     return -1;
                 }
             }
             else
             {
-                IwDebugTraceLinePrintf("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage);
+                IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage));
             }
         }
         return 0;
@@ -393,7 +396,7 @@ static int CreateInputWindow()
 
 static IDirectDraw7 *idd7 = NULL;
 
-s3eResult GamePadInit_platform()
+s3eResult s3eHidControllerInit_platform()
 {
     CreateInputWindow();
         
@@ -403,16 +406,16 @@ s3eResult GamePadInit_platform()
     return S3E_RESULT_SUCCESS;
 }
 
-void GamePadTerminate_platform()
+void s3eHidControllerTerminate_platform()
 {
 }
 
-bool GamePad_IsConnected_platform()
+bool s3eHidControllerIsConnected_platform()
 {
     return false;
 }
 
-bool GamePad_Update_platform(float dt)
+bool s3eHidControllerUpdate_platform(float dt)
 {
     // Dispatch any waiting messages to our windowproc
     MSG msg;
@@ -431,100 +434,100 @@ bool GamePad_Update_platform(float dt)
     return false;
 }
 
-float GamePad_GetStick1XAxis_platform()
+float s3eHidControllerGetStick1XAxis_platform()
 {
     return (lAxisX - axisMax) / (float)axisMax;
 }
 
-float GamePad_GetStick1YAxis_platform()
+float s3eHidControllerGetStick1YAxis_platform()
 {
     return (lAxisY - axisMax) / (float)axisMax;
 }
 
-float GamePad_GetStick2XAxis_platform()
+float s3eHidControllerGetStick2XAxis_platform()
 {
     const float resultU = (lAxisU - axisMax) / (float)axisMax;
     //IwDebugTraceLinePrintf("%s(%d): lAxisU=%8d, lAxisR=%8d, resultU=%.2f\n", __FUNCTION__, __LINE__, lAxisU, lAxisR, resultU);
     return resultU;
 }
 
-float GamePad_GetStick2YAxis_platform()
+float s3eHidControllerGetStick2YAxis_platform()
 {
     return (lAxisR - axisMax) / (float)axisMax;
 }
 
-float GamePad_GetLeftTrigger_platform()
+float s3eHidControllerGetLeftTrigger_platform()
 {
     // Z-axis (L-Trigger: 32K-65K, R-Trigger: 0K-32K)
     return (max(axisMax, min(axisMax * 2, lAxisZ)) - axisMax) / (float)axisMax;
 }
 
-float GamePad_GetRightTrigger_platform()
+float s3eHidControllerGetRightTrigger_platform()
 {
     // Z-axis (L-Trigger: 32K-65K, R-Trigger: 0K-32K)
     return fabsf((max(0, min(axisMax, lAxisZ)) - axisMax) / (float)axisMax);
 }
 
-bool GamePad_GetButtonX_platform()
+bool s3eHidControllerGetButtonX_platform()
 {
     return bButtonStates[2] ? true : false;
 }
 
-bool GamePad_GetButtonY_platform()
+bool s3eHidControllerGetButtonY_platform()
 {
     return bButtonStates[3] ? true : false;
 }
 
-bool GamePad_GetButtonA_platform()
+bool s3eHidControllerGetButtonA_platform()
 {
     return bButtonStates[0] ? true : false;
 }
 
-bool GamePad_GetButtonB_platform()
+bool s3eHidControllerGetButtonB_platform()
 {
     return bButtonStates[1] ? true : false;
 }
 
 // Returns value of DPAD Left button
-bool GamePad_GetButtonDPadLeft_platform()
+bool s3eHidControllerGetButtonDPadLeft_platform()
 {
     return (lDPad == 6) || (lDPad == 7) || (lDPad == 8);
 }
 
 // Returns value of DPAD Right button
-bool GamePad_GetButtonDPadRight_platform()
+bool s3eHidControllerGetButtonDPadRight_platform()
 {
     return (lDPad == 2) || (lDPad == 3) || (lDPad == 4);
 }
 
 // Returns value of DPAD Up button
-bool GamePad_GetButtonDPadUp_platform()
+bool s3eHidControllerGetButtonDPadUp_platform()
 {
     return (lDPad == 1) || (lDPad == 2) || (lDPad == 8);
 }
 
 // Returns value of DPAD Down button
-bool GamePad_GetButtonDPadDown_platform()
+bool s3eHidControllerGetButtonDPadDown_platform()
 {
     return (lDPad == 4) || (lDPad == 5) || (lDPad == 6);
 }
 
-bool GamePad_GetButtonLShoulderDown_platform()
+bool s3eHidControllerGetButtonLShoulderDown_platform()
 {
     return bButtonStates[4] ? true : false;
 }
 
-bool GamePad_GetButtonRShoulderDown_platform()
+bool s3eHidControllerGetButtonRShoulderDown_platform()
 {
     return bButtonStates[5] ? true : false;
 }
 
-bool GamePad_GetButtonStart_platform()
+bool s3eHidControllerGetButtonStart_platform()
 {
     return bButtonStates[7] ? true: false;
 }
 
-bool GamePad_GetButtonSelect_platform()
+bool s3eHidControllerGetButtonSelect_platform()
 {
     return bButtonStates[6] ? true : false;
 }

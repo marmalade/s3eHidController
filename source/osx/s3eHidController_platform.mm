@@ -3,36 +3,36 @@
  * written by Halfbot.com ( Melvin Samuel )
  */
 
-#include "GamePad_internal.h"
+#include "s3eHidControllerinternal.h"
 #include "Xbox360ControllerManager.h"
 #include "Xbox360Controller.h"
 
 
-s3eResult GamePadInit_platform()
+s3eResult s3eHidControllerInit_platform()
 {    
     [Xbox360ControllerManager initialize];
     return S3E_RESULT_SUCCESS;
 }
 
-void GamePadTerminate_platform()
+void s3eHidControllerTerminate_platform()
 {
     // Add any platform-specific termination code here
 }
 
-bool GamePad_IsConnected_platform()
+bool s3eHidControllerIsConnected_platform()
 {
     int gpCount = [[Xbox360ControllerManager sharedInstance] controllerCount];
     return gpCount > 0;
 }
 
-bool GamePad_Update_platform(float dt)
+bool s3eHidControllerUpdate_platform(float dt)
 {
     // Run loop, You can change the number if you dont think this is updated enought
     while (CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.002, NO) == kCFRunLoopRunHandledSource);
     return true;
 }
 
-float GamePad_GetStick1XAxis_platform()
+float s3eHidControllerGetStick1XAxis_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -40,7 +40,7 @@ float GamePad_GetStick1XAxis_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].leftStickX;
 }
 
-float GamePad_GetStick1YAxis_platform()
+float s3eHidControllerGetStick1YAxis_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -48,7 +48,7 @@ float GamePad_GetStick1YAxis_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].leftStickY;
 }
 
-float GamePad_GetStick2XAxis_platform()
+float s3eHidControllerGetStick2XAxis_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -57,7 +57,7 @@ float GamePad_GetStick2XAxis_platform()
 
 }
 
-float GamePad_GetStick2YAxis_platform()
+float s3eHidControllerGetStick2YAxis_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -66,7 +66,7 @@ float GamePad_GetStick2YAxis_platform()
 
 }
 
-float GamePad_GetLeftTrigger_platform()
+float s3eHidControllerGetLeftTrigger_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -74,7 +74,7 @@ float GamePad_GetLeftTrigger_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].leftTrigger;
 }
 
-float GamePad_GetRightTrigger_platform()
+float s3eHidControllerGetRightTrigger_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -82,7 +82,7 @@ float GamePad_GetRightTrigger_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].rightTrigger;
 }
 
-bool GamePad_GetButtonX_platform()
+bool s3eHidControllerGetButtonX_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -90,7 +90,7 @@ bool GamePad_GetButtonX_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].x;
 }
 
-bool GamePad_GetButtonY_platform()
+bool s3eHidControllerGetButtonY_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -98,7 +98,7 @@ bool GamePad_GetButtonY_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].y;
 }
 
-bool GamePad_GetButtonA_platform()
+bool s3eHidControllerGetButtonA_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
     {
@@ -118,7 +118,7 @@ bool GamePad_GetButtonA_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].a;
 }
 
-bool GamePad_GetButtonB_platform()
+bool s3eHidControllerGetButtonB_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -126,7 +126,7 @@ bool GamePad_GetButtonB_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].b;
 }
 
-bool GamePad_GetButtonDPadLeft_platform()
+bool s3eHidControllerGetButtonDPadLeft_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL)
         return 0;
@@ -134,7 +134,7 @@ bool GamePad_GetButtonDPadLeft_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].left;
 }
 
-bool GamePad_GetButtonDPadRight_platform()
+bool s3eHidControllerGetButtonDPadRight_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -142,7 +142,7 @@ bool GamePad_GetButtonDPadRight_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].right;
 }
 
-bool GamePad_GetButtonDPadUp_platform()
+bool s3eHidControllerGetButtonDPadUp_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -150,7 +150,7 @@ bool GamePad_GetButtonDPadUp_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].up;
 }
 
-bool GamePad_GetButtonDPadDown_platform()
+bool s3eHidControllerGetButtonDPadDown_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL)
         return 0;
@@ -158,7 +158,7 @@ bool GamePad_GetButtonDPadDown_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].down;
 }
 
-bool GamePad_GetButtonLShoulderDown_platform()
+bool s3eHidControllerGetButtonLShoulderDown_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -166,7 +166,7 @@ bool GamePad_GetButtonLShoulderDown_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].leftShoulder;
 }
 
-bool GamePad_GetButtonRShoulderDown_platform()
+bool s3eHidControllerGetButtonRShoulderDown_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL)
         return 0;
@@ -174,7 +174,7 @@ bool GamePad_GetButtonRShoulderDown_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].rightShoulder;
 }
 
-bool GamePad_GetButtonStart_platform()
+bool s3eHidControllerGetButtonStart_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
@@ -182,7 +182,7 @@ bool GamePad_GetButtonStart_platform()
     return [[Xbox360ControllerManager sharedInstance] getController:0].start;
 }
 
-bool GamePad_GetButtonSelect_platform()
+bool s3eHidControllerGetButtonSelect_platform()
 {
     if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
         return 0;
