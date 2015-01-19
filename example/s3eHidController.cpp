@@ -16,7 +16,7 @@ int main()
     while (!s3eDeviceCheckQuitRequest())
     {
         // Update the Xbox 360 game-pad, enabling button latch, input event processing etc
-        s3eHidControllerUpdate(0.0f);
+        s3eHidControllerUpdate();
 
         // Clear the surface
         IwGxClear();

@@ -23,7 +23,7 @@
  * Definitions for functions types passed to/from s3eExt interface
  */
 typedef       bool(*s3eHidControllerIsConnected_t)();
-typedef       bool(*s3eHidControllerUpdate_t)(float dt);
+typedef       bool(*s3eHidControllerUpdate_t)();
 typedef      float(*s3eHidControllerGetStick1XAxis_t)();
 typedef      float(*s3eHidControllerGetStick1YAxis_t)();
 typedef      float(*s3eHidControllerGetStick2XAxis_t)();
@@ -42,6 +42,7 @@ typedef       bool(*s3eHidControllerGetButtonLShoulderDown_t)();
 typedef       bool(*s3eHidControllerGetButtonRShoulderDown_t)();
 typedef       bool(*s3eHidControllerGetButtonStart_t)();
 typedef       bool(*s3eHidControllerGetButtonSelect_t)();
+typedef       bool(*s3eHidControllerUpdateLegacy_t)(float dt);
 
 /**
  * struct that gets filled in by s3eHidControllerRegister
@@ -68,6 +69,7 @@ typedef struct s3eHidControllerFuncs
     s3eHidControllerGetButtonRShoulderDown_t m_s3eHidControllerGetButtonRShoulderDown;
     s3eHidControllerGetButtonStart_t m_s3eHidControllerGetButtonStart;
     s3eHidControllerGetButtonSelect_t m_s3eHidControllerGetButtonSelect;
+    s3eHidControllerUpdateLegacy_t m_s3eHidControllerUpdateLegacy;
 } s3eHidControllerFuncs;
 
 static s3eHidControllerFuncs g_Ext;
@@ -133,7 +135,7 @@ bool s3eHidControllerIsConnected()
     return ret;
 }
 
-bool s3eHidControllerUpdate(float dt)
+bool s3eHidControllerUpdate()
 {
     IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[1] func: s3eHidControllerUpdate"));
 
@@ -144,7 +146,7 @@ bool s3eHidControllerUpdate(float dt)
     s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
 #endif
 
-    bool ret = g_Ext.m_s3eHidControllerUpdate(dt);
+    bool ret = g_Ext.m_s3eHidControllerUpdate();
 
 #ifdef LOADER_CALL_LOCK
     s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
@@ -505,6 +507,26 @@ bool s3eHidControllerGetButtonSelect()
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonSelect();
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+#endif
+
+    return ret;
+}
+
+bool s3eHidControllerUpdateLegacy(float dt)
+{
+    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[20] func: s3eHidControllerUpdateLegacy"));
+
+    if (!_extLoad())
+        return false;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+#endif
+
+    bool ret = g_Ext.m_s3eHidControllerUpdateLegacy(dt);
 
 #ifdef LOADER_CALL_LOCK
     s3eDeviceLoaderCallDone(S3E_TRUE, NULL);

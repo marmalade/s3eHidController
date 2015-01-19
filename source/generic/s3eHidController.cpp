@@ -28,9 +28,15 @@ bool s3eHidControllerIsConnected()
 	return s3eHidControllerIsConnected_platform();
 }
 
-bool s3eHidControllerUpdate(float dt)
+bool s3eHidControllerUpdateLegacy(float dt)
 {
-	return s3eHidControllerUpdate_platform(dt);
+    //extension never needed the dt value. So cutting it out.
+	return s3eHidControllerUpdate_platform();
+}
+
+bool s3eHidControllerUpdate()
+{
+	return s3eHidControllerUpdate_platform();
 }
 
 float s3eHidControllerGetStick1XAxis()

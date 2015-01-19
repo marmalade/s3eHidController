@@ -4,7 +4,7 @@
 #include s3eHidController.h
 
 #define GamePad_IsConnected s3eHidControllerIsConnected
-#define GamePad_Update s3eHidControllerUpdate
+#define GamePad_Update s3eHidControllerUpdateLegacy
 #define GamePad_GetStick1XAxis s3eHidControllerGetStick1XAxis
 #define GamePad_GetStick1YAxis s3eHidControllerGetStick1YAxis
 #define GamePad_GetStick2XAxis s3eHidControllerGetStick2XAxis

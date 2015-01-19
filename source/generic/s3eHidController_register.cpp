@@ -21,7 +21,7 @@ extern void s3eHidControllerTerminate();
 void s3eHidControllerRegisterExt()
 {
     /* fill in the function pointer struct for this extension */
-    void* funcPtrs[20];
+    void* funcPtrs[21];
     funcPtrs[0] = (void*)s3eHidControllerIsConnected;
     funcPtrs[1] = (void*)s3eHidControllerUpdate;
     funcPtrs[2] = (void*)s3eHidControllerGetStick1XAxis;
@@ -42,11 +42,12 @@ void s3eHidControllerRegisterExt()
     funcPtrs[17] = (void*)s3eHidControllerGetButtonRShoulderDown;
     funcPtrs[18] = (void*)s3eHidControllerGetButtonStart;
     funcPtrs[19] = (void*)s3eHidControllerGetButtonSelect;
+    funcPtrs[20] = (void*)s3eHidControllerUpdateLegacy;
 
     /*
      * Flags that specify the extension's use of locking and stackswitching
      */
-    int flags[20] = { 0 };
+    int flags[21] = { 0 };
 
     /*
      * Register the extension

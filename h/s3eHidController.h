@@ -28,7 +28,7 @@ s3eBool s3eHidControllerAvailable();
 
 bool s3eHidControllerIsConnected();
 
-bool s3eHidControllerUpdate(float dt);
+bool s3eHidControllerUpdate();
 
 float s3eHidControllerGetStick1XAxis();
 
@@ -65,6 +65,8 @@ bool s3eHidControllerGetButtonRShoulderDown();
 bool s3eHidControllerGetButtonStart();
 
 bool s3eHidControllerGetButtonSelect();
+
+bool s3eHidControllerUpdateLegacy(float dt);
 
 S3E_END_C_DECL
 

@@ -25,7 +25,7 @@ bool s3eHidControllerIsConnected_platform()
     return gpCount > 0;
 }
 
-bool s3eHidControllerUpdate_platform(float dt)
+bool s3eHidControllerUpdate_platform()
 {
     // Run loop, You can change the number if you dont think this is updated enought
     while (CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.002, NO) == kCFRunLoopRunHandledSource);

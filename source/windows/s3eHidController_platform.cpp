@@ -415,7 +415,7 @@ bool s3eHidControllerIsConnected_platform()
     return false;
 }
 
-bool s3eHidControllerUpdate_platform(float dt)
+bool s3eHidControllerUpdate_platform()
 {
     // Dispatch any waiting messages to our windowproc
     MSG msg;
