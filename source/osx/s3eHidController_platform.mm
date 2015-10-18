@@ -3,7 +3,7 @@
  * written by Halfbot.com ( Melvin Samuel )
  */
 
-#include "s3eHidControllerinternal.h"
+#include "s3eHidController_internal.h"
 #include "Xbox360ControllerManager.h"
 #include "Xbox360Controller.h"
 

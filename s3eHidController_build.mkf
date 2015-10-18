@@ -70,7 +70,11 @@ if {{defined I3D_OS_OSX}}
         ["source"]
         (use_first_found, source/osx, source/generic)
         s3eHidController_platform.mm
-        #Add any osx-specific files here
+        Xbox360Controller.h
+        Xbox360Controller.m
+        Xbox360ControllerDelegate.h
+        Xbox360ControllerManager.h
+        Xbox360ControllerManager.m
     }
 }
 

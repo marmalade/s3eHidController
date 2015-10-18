@@ -22,7 +22,8 @@ S3E_BEGIN_C_DECL
 // \endcond
 
 /**
- * Returns S3E_TRUE if the HidController extension is available.
+ * Report if the HidController extension is available.
+ * @return S3E_TRUE if the HidController extension is available. S3E_FALSE otherwise.
  */
 s3eBool s3eHidControllerAvailable();
 
@@ -68,6 +69,8 @@ bool s3eHidControllerGetButtonSelect();
 
 bool s3eHidControllerUpdateLegacy(float dt);
 
+// \cond HIDDEN_DEFINES
 S3E_END_C_DECL
+// \endcond
 
 #endif /* !S3E_EXT_HIDCONTROLLER_H */

@@ -23,7 +23,6 @@ redistribute). That supports XP and newer.
 Status 12/01/2015: I've renamed and am currently heavily refactoring this
 extension. I've checked in built libs. The checked in version works with
 360 gamepad on Windows 8 at least. Ouya pad works but key mappings are wrong.
-Not tested or build on Mac yet but likely to work.
 
 Plans: Support more devices via config mapping files (map device ID to keycode
 mappings). Integrate with similar Android and iOS extensions that I'm
@@ -56,9 +55,9 @@ code first and then do via config file.
 
 ### Mac OS X
 
-You will need a drive for you HID device to support the controller.
-Please use the Xbox 360 Controller Driver written by Colin Munro:
-http://tattiebogle.net/index.php/ProjectRoot/Xbox360Controller
+You will need a driver for you HID device to support the controller.
+There's info here: http://www.jacobtomlinson.co.uk/2014/10/17/use-xbox-360-pad-with-yosemite/
+And a driver here: https://github.com/360Controller/360Controller/releases
 
 
 Credit where it's due!
