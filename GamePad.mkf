@@ -1,4 +1,6 @@
 # Legacy Subproject for GamePad extension.
 # Renamed and refactored into s3eHidController extension.
+# This will at least allow MKB projects to open before user
+# has to refactor API calls
 
 subproject s3eHidController

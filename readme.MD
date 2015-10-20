@@ -18,15 +18,16 @@ Currently this extension has mappings for:
 
 The Windows extension uses the older 7.1.0 WDK (Windows Driver Kit). If you
 want to edit/rebuild, you'll need to install that (license didn't let me
-redistribute). That supports XP and newer.
+redistribute). That supports XP and newer. You need to install the *whole*
+pack of libs and tools for the headers (inc folder) to turn up!
 
 Status 12/01/2015: I've renamed and am currently heavily refactoring this
 extension. I've checked in built libs. The checked in version works with
 360 gamepad on Windows 8 at least. Ouya pad works but key mappings are wrong.
 
 Plans: Support more devices via config mapping files (map device ID to keycode
-mappings). Integrate with similar Android and iOS extensions that I'm
-workign on, via a new C++ class. Add Marmalade Quick wrapper.
+mappings). See IwGameController for C++ wrapper that integrates Android and iOS
+extensions and provides a Quick/Lua interface.
 
 Original docs from before my fiddling are in the legacy_docs folder.
 
@@ -50,8 +51,8 @@ Setting up an Xbox 360 controller on PC:
 support.xbox.com/en-GB/xbox-360/accessories/connect-wired-controller-computer
 
 For the Ouya bluetooth controller, I found it worked out of the box but key
-codes are wrong. The extension needs to map its keys/axes... Will prob hard
-code first and then do via config file.
+codes are wrong. The extension could map its keys/axes (or user could go do this?)
+... Will prob hard code first and then do via config file.
 
 ### Mac OS X
 
