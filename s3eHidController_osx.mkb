@@ -6,13 +6,11 @@ options
 {
     dll
     x86
-}
 
-options
-{
     output-name="lib/osx/libs3eHidController.dylib"
     output-name-debug="lib/osx/libs3eHidController_d.dylib"
 }
+
 define S3E_BUILD_EXT
 
 subproject s3eHidController_build
