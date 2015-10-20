@@ -82,6 +82,10 @@ bool s3eHidControllerGetButtonStart_platform();
 
 bool s3eHidControllerGetButtonSelect_platform();
 
+bool s3eHidControllerGetButtonStick1_platform();
+
+bool s3eHidControllerGetButtonStick2_platform();
+
 bool s3eHidControllerUpdateLegacy_platform(float dt);
 
 

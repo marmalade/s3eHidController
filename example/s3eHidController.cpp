@@ -40,11 +40,13 @@ int main()
         snprintf(
             str, 
             MaxStr, 
-            "%s %s %s %s",
+            "%s %s %s %s %s %s",
             s3eHidControllerGetButtonSelect() ? "Select" : "",
             s3eHidControllerGetButtonStart() ? "Start" : "",
             s3eHidControllerGetButtonLShoulderDown() ? "LShoulder" : "",
-            s3eHidControllerGetButtonRShoulderDown() ? "RShoulder" : "");
+            s3eHidControllerGetButtonRShoulderDown() ? "RShoulder" : "",
+			s3eHidControllerGetButtonStick1() ? "LStick" : "",
+			s3eHidControllerGetButtonStick2() ? "Rstick" : "");
         IwGxPrintString(10, 210, str);
         snprintf(str, MaxStr, "Left-Trigger: %.3f Right-Trigger: %.3f}", s3eHidControllerGetLeftTrigger(), s3eHidControllerGetRightTrigger());
         IwGxPrintString(10, 230, str);

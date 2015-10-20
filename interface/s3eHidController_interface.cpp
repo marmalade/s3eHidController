@@ -466,9 +466,49 @@ bool s3eHidControllerGetButtonSelect()
     return ret;
 }
 
+bool s3eHidControllerGetButtonStick1()
+{
+    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[20] func: s3eHidControllerGetButtonStick1"));
+
+    if (!_extLoad())
+        return false;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick1);
+#endif
+
+    bool ret = g_Ext.m_s3eHidControllerGetButtonStick1();
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick1);
+#endif
+
+    return ret;
+}
+
+bool s3eHidControllerGetButtonStick2()
+{
+    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[21] func: s3eHidControllerGetButtonStick2"));
+
+    if (!_extLoad())
+        return false;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick2);
+#endif
+
+    bool ret = g_Ext.m_s3eHidControllerGetButtonStick2();
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick2);
+#endif
+
+    return ret;
+}
+
 bool s3eHidControllerUpdateLegacy(float dt)
 {
-    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[20] func: s3eHidControllerUpdateLegacy"));
+    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[22] func: s3eHidControllerUpdateLegacy"));
 
     if (!_extLoad())
         return false;

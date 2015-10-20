@@ -41,16 +41,16 @@ extern "C"
 #define SAFE_FREE(p)	{ if(p) { HeapFree(hHeap, 0, p); (p) = NULL; } }
 
 // Xbox 360 Controller Button Mappings:
-// Button 1: A
-// Button 2: B
-// Button 3: X
-// Button 4: Y
-// Button 5: L-Shoulder
-// Button 6: R-Shoulder
-// Button 7: Back
-// Button 8: Start
-// Button 9: L-Stick-Click
-// Button 10: R-Stick-Click
+// Button 0: A
+// Button 1: B
+// Button 2: X
+// Button 3: Y
+// Button 4: L-Shoulder
+// Button 5: R-Shoulder
+// Button 6: Back
+// Button 7: Start
+// Button 8: L-Stick-Click
+// Button 9: R-Stick-Click
 static BOOL bButtonStates[MAX_BUTTONS];
 static const LONG axisMax = 32768L;
 static LONG lAxisX = axisMax;
@@ -530,4 +530,14 @@ bool s3eHidControllerGetButtonStart_platform()
 bool s3eHidControllerGetButtonSelect_platform()
 {
     return bButtonStates[6] ? true : false;
+}
+
+bool s3eHidControllerGetButtonStick1_platform()
+{
+    return bButtonStates[8] ? true : false;
+}
+
+bool s3eHidControllerGetButtonStick2_platform()
+{
+    return bButtonStates[9] ? true : false;
 }

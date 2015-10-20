@@ -189,3 +189,13 @@ bool s3eHidControllerGetButtonSelect_platform()
 
     return [[Xbox360ControllerManager sharedInstance] getController:0].back;
 }
+
+bool s3eHidControllerGetButtonStick1_platform()
+{
+    return false;
+}
+
+bool s3eHidControllerGetButtonStick2_platform()
+{
+    return false;
+}

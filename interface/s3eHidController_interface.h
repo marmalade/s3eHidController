@@ -25,6 +25,8 @@ typedef       bool(*s3eHidControllerGetButtonLShoulderDown_t)();
 typedef       bool(*s3eHidControllerGetButtonRShoulderDown_t)();
 typedef       bool(*s3eHidControllerGetButtonStart_t)();
 typedef       bool(*s3eHidControllerGetButtonSelect_t)();
+typedef       bool(*s3eHidControllerGetButtonStick1_t)();
+typedef       bool(*s3eHidControllerGetButtonStick2_t)();
 typedef       bool(*s3eHidControllerUpdateLegacy_t)(float dt);
 
 /**
@@ -52,5 +54,7 @@ typedef struct s3eHidControllerFuncs
     s3eHidControllerGetButtonRShoulderDown_t m_s3eHidControllerGetButtonRShoulderDown;
     s3eHidControllerGetButtonStart_t m_s3eHidControllerGetButtonStart;
     s3eHidControllerGetButtonSelect_t m_s3eHidControllerGetButtonSelect;
+    s3eHidControllerGetButtonStick1_t m_s3eHidControllerGetButtonStick1;
+    s3eHidControllerGetButtonStick2_t m_s3eHidControllerGetButtonStick2;
     s3eHidControllerUpdateLegacy_t m_s3eHidControllerUpdateLegacy;
 } s3eHidControllerFuncs;

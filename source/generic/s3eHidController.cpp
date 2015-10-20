@@ -1,5 +1,5 @@
 /*
-Generic implementation of the GamePad extension.
+Generic implementation of the s3eHidController extension.
 This file should perform any platform-indepedentent functionality
 (e.g. error checking) before calling platform-dependent implementations.
 */
@@ -28,15 +28,15 @@ bool s3eHidControllerIsConnected()
 	return s3eHidControllerIsConnected_platform();
 }
 
-bool s3eHidControllerUpdateLegacy(float dt)
-{
-    //extension never needed the dt value. So cutting it out.
-	return s3eHidControllerUpdate_platform();
-}
-
 bool s3eHidControllerUpdate()
 {
 	return s3eHidControllerUpdate_platform();
+}
+
+bool s3eHidControllerUpdateLegacy(float dt)
+{
+    //extension never needed the dt value. So cutting it out.
+    return s3eHidControllerUpdate_platform();
 }
 
 float s3eHidControllerGetStick1XAxis()
@@ -127,4 +127,14 @@ bool s3eHidControllerGetButtonStart()
 bool s3eHidControllerGetButtonSelect()
 {
 	return s3eHidControllerGetButtonSelect_platform();
+}
+
+bool s3eHidControllerGetButtonStick1()
+{
+	return s3eHidControllerGetButtonStick1_platform();
+}
+
+bool s3eHidControllerGetButtonStick2()
+{
+	return s3eHidControllerGetButtonStick2_platform();
 }

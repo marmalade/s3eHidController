@@ -67,6 +67,10 @@ bool s3eHidControllerGetButtonStart();
 
 bool s3eHidControllerGetButtonSelect();
 
+bool s3eHidControllerGetButtonStick1();
+
+bool s3eHidControllerGetButtonStick2();
+
 bool s3eHidControllerUpdateLegacy(float dt);
 
 // \cond HIDDEN_DEFINES
