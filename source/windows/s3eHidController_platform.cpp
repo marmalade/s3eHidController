@@ -61,6 +61,8 @@ static LONG lAxisR = axisMax;
 static LONG lDPad = 0;
 static INT  g_NumberOfButtons = 0;
 
+static BOOL g_GotDevice = FALSE;
+
 static void ParseRawInput(PRAWINPUT pRawInput)
 {
     //IwDebugTraceLinePrintf("%s(%d): Parsing raw input\n", __FUNCTION__, __LINE__);
@@ -279,8 +281,11 @@ static LRESULT CALLBACK WindowProc_InputOnly(HWND hWnd, UINT msg, WPARAM wParam,
             //
             // Register for joystick devices
             //
-            // TODO: this is just for logging - doesnt actually do anything in release
+            
+#ifdef IW_DEBUG
+            // This is just for logging - doesnt actually do anything in release
             EnumerateDevices();            
+#endif
 
             // See USB Serial BUS HID Usage Tables (http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf) for more info
             RAWINPUTDEVICE rid;
@@ -294,21 +299,28 @@ static LRESULT CALLBACK WindowProc_InputOnly(HWND hWnd, UINT msg, WPARAM wParam,
             rid.dwFlags     = RIDEV_INPUTSINK;
             rid.hwndTarget  = hWnd;
 
-            if(!RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
+            if(RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
+            {
+                g_GotDevice = TRUE;
+                IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage));
+            }
+            else
             {
                 // Try usage joystick next...if no game-pad found...this is for Logitech compatibility
                 rid.usUsage = usageJoystick;
                 IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices with usUsage %d failed, trying %d!\n", __FUNCTION__, usageGamePad, usageJoystick));
                 
-                if(!RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
+                if(RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
                 {
+                    g_GotDevice = TRUE;
+                    IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage));
+                }
+                else
+                {
+                    g_GotDevice = FALSE;
                     IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices returned -1...attempted both %d and %d usages :(\n", __FUNCTION__, usageGamePad, usageJoystick));
                     return -1;
                 }
-            }
-            else
-            {
-                IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage));
             }
         }
         return 0;
@@ -412,7 +424,7 @@ void s3eHidControllerTerminate_platform()
 
 bool s3eHidControllerIsConnected_platform()
 {
-    return false;
+    return (bool)g_GotDevice;
 }
 
 bool s3eHidControllerUpdate_platform()
