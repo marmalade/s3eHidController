@@ -6,8 +6,6 @@
 //  Copyright 2011 Get Set Games. All rights reserved.
 //
 
-
-
 #import <Foundation/Foundation.h>
 #import <IOKit/IOKitLib.h>
 #import <IOKit/IOCFPlugIn.h>

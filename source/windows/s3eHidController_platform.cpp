@@ -41,16 +41,16 @@ extern "C"
 #define SAFE_FREE(p)	{ if(p) { HeapFree(hHeap, 0, p); (p) = NULL; } }
 
 // Xbox 360 Controller Button Mappings:
-// Button 1: A
-// Button 2: B
-// Button 3: X
-// Button 4: Y
-// Button 5: L-Shoulder
-// Button 6: R-Shoulder
-// Button 7: Back
-// Button 8: Start
-// Button 9: L-Stick-Click
-// Button 10: R-Stick-Click
+// Button 0: A
+// Button 1: B
+// Button 2: X
+// Button 3: Y
+// Button 4: L-Shoulder
+// Button 5: R-Shoulder
+// Button 6: Back
+// Button 7: Start
+// Button 8: L-Stick-Click
+// Button 9: R-Stick-Click
 static BOOL bButtonStates[MAX_BUTTONS];
 static const LONG axisMax = 32768L;
 static LONG lAxisX = axisMax;
@@ -60,6 +60,8 @@ static LONG lAxisU = axisMax;
 static LONG lAxisR = axisMax;
 static LONG lDPad = 0;
 static INT  g_NumberOfButtons = 0;
+
+static BOOL g_GotDevice = FALSE;
 
 static void ParseRawInput(PRAWINPUT pRawInput)
 {
@@ -279,8 +281,11 @@ static LRESULT CALLBACK WindowProc_InputOnly(HWND hWnd, UINT msg, WPARAM wParam,
             //
             // Register for joystick devices
             //
-            // TODO: this is just for logging - doesnt actually do anything in release
+            
+#ifdef IW_DEBUG
+            // This is just for logging - doesnt actually do anything in release
             EnumerateDevices();            
+#endif
 
             // See USB Serial BUS HID Usage Tables (http://www.usb.org/developers/devclass_docs/Hut1_12v2.pdf) for more info
             RAWINPUTDEVICE rid;
@@ -294,21 +299,28 @@ static LRESULT CALLBACK WindowProc_InputOnly(HWND hWnd, UINT msg, WPARAM wParam,
             rid.dwFlags     = RIDEV_INPUTSINK;
             rid.hwndTarget  = hWnd;
 
-            if(!RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
+            if(RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
+            {
+                g_GotDevice = TRUE;
+                IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage));
+            }
+            else
             {
                 // Try usage joystick next...if no game-pad found...this is for Logitech compatibility
                 rid.usUsage = usageJoystick;
                 IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices with usUsage %d failed, trying %d!\n", __FUNCTION__, usageGamePad, usageJoystick));
                 
-                if(!RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
+                if(RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)))
                 {
+                    g_GotDevice = TRUE;
+                    IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage));
+                }
+                else
+                {
+                    g_GotDevice = FALSE;
                     IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices returned -1...attempted both %d and %d usages :(\n", __FUNCTION__, usageGamePad, usageJoystick));
                     return -1;
                 }
-            }
-            else
-            {
-                IwTrace(HIDCONTROLLER, ("%s: WM_CREATE: RegisterRawInputDevices SUCCEEDED for Usage Id %d!\n", __FUNCTION__, rid.usUsage));
             }
         }
         return 0;
@@ -412,10 +424,10 @@ void s3eHidControllerTerminate_platform()
 
 bool s3eHidControllerIsConnected_platform()
 {
-    return false;
+    return (bool)g_GotDevice;
 }
 
-bool s3eHidControllerUpdate_platform(float dt)
+bool s3eHidControllerUpdate_platform()
 {
     // Dispatch any waiting messages to our windowproc
     MSG msg;
@@ -530,4 +542,14 @@ bool s3eHidControllerGetButtonStart_platform()
 bool s3eHidControllerGetButtonSelect_platform()
 {
     return bButtonStates[6] ? true : false;
+}
+
+bool s3eHidControllerGetButtonStick1_platform()
+{
+    return bButtonStates[8] ? true : false;
+}
+
+bool s3eHidControllerGetButtonStick2_platform()
+{
+    return bButtonStates[9] ? true : false;
 }

@@ -8,7 +8,7 @@ functions:
 bool s3eHidControllerIsConnected() false
 
 // Call this once per frame to update the game-pad
-bool s3eHidControllerUpdate(float dt) false
+bool s3eHidControllerUpdate() false
 
 // Returns value of Stick 1, X Axis between -1.0 and 1.0
 float s3eHidControllerGetStick1XAxis() 0
@@ -63,3 +63,11 @@ bool s3eHidControllerGetButtonStart() false
 
 // Returns value of Select button
 bool s3eHidControllerGetButtonSelect() false
+
+// Returns value of left stick button - pressing stick itself down
+bool s3eHidControllerGetButtonStick1() false
+
+// Returns value of right stick button - pressing stick itself down
+bool s3eHidControllerGetButtonStick2() false
+
+bool s3eHidControllerUpdateLegacy(float dt) false

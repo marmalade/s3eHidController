@@ -44,7 +44,7 @@ void s3eHidControllerTerminate();
 void s3eHidControllerTerminate_platform();
 bool s3eHidControllerIsConnected_platform();
 
-bool s3eHidControllerUpdate_platform(float dt);
+bool s3eHidControllerUpdate_platform();
 
 float s3eHidControllerGetStick1XAxis_platform();
 
@@ -81,6 +81,12 @@ bool s3eHidControllerGetButtonRShoulderDown_platform();
 bool s3eHidControllerGetButtonStart_platform();
 
 bool s3eHidControllerGetButtonSelect_platform();
+
+bool s3eHidControllerGetButtonStick1_platform();
+
+bool s3eHidControllerGetButtonStick2_platform();
+
+bool s3eHidControllerUpdateLegacy_platform(float dt);
 
 
 #endif /* !S3EHIDCONTROLLER_INTERNAL_H */

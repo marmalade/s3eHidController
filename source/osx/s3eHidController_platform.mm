@@ -3,7 +3,7 @@
  * written by Halfbot.com ( Melvin Samuel )
  */
 
-#include "s3eHidControllerinternal.h"
+#include "s3eHidController_internal.h"
 #include "Xbox360ControllerManager.h"
 #include "Xbox360Controller.h"
 
@@ -25,7 +25,7 @@ bool s3eHidControllerIsConnected_platform()
     return gpCount > 0;
 }
 
-bool s3eHidControllerUpdate_platform(float dt)
+bool s3eHidControllerUpdate_platform()
 {
     // Run loop, You can change the number if you dont think this is updated enought
     while (CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.002, NO) == kCFRunLoopRunHandledSource);
@@ -188,4 +188,20 @@ bool s3eHidControllerGetButtonSelect_platform()
         return 0;
 
     return [[Xbox360ControllerManager sharedInstance] getController:0].back;
+}
+
+bool s3eHidControllerGetButtonStick1_platform()
+{
+    if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
+        return 0;
+    
+    return [[Xbox360ControllerManager sharedInstance] getController:0].leftStick;
+}
+
+bool s3eHidControllerGetButtonStick2_platform()
+{
+    if ( [[Xbox360ControllerManager sharedInstance] getController:0] == NULL )
+        return 0;
+    
+    return [[Xbox360ControllerManager sharedInstance] getController:0].rightStick;
 }

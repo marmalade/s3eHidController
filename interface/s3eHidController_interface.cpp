@@ -11,64 +11,17 @@
 #include "s3eHidController.h"
 
 
+// Define S3E_EXT_SKIP_LOADER_CALL_LOCK on the user-side to skip LoaderCallStart/LoaderCallDone()-entry.
+// e.g. in s3eNUI this is used for generic user-side IwUI-based implementation.
 #ifndef S3E_EXT_SKIP_LOADER_CALL_LOCK
-// For MIPs (and WP8) platform we do not have asm code for stack switching
-// implemented. So we make LoaderCallStart call manually to set GlobalLock
-#if defined __mips || defined S3E_ANDROID_X86 || (defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP))
+#if defined I3D_ARCH_MIPS || (defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)) || defined I3D_ARCH_NACLX86_64
+// For platforms missing stack-switching (MIPS, WP8, NaCl, etc.) make loader-entry via LoaderCallStart/LoaderCallDone() on the user-side.
 #define LOADER_CALL_LOCK
 #endif
 #endif
 
-/**
- * Definitions for functions types passed to/from s3eExt interface
- */
-typedef       bool(*s3eHidControllerIsConnected_t)();
-typedef       bool(*s3eHidControllerUpdate_t)(float dt);
-typedef      float(*s3eHidControllerGetStick1XAxis_t)();
-typedef      float(*s3eHidControllerGetStick1YAxis_t)();
-typedef      float(*s3eHidControllerGetStick2XAxis_t)();
-typedef      float(*s3eHidControllerGetStick2YAxis_t)();
-typedef      float(*s3eHidControllerGetLeftTrigger_t)();
-typedef      float(*s3eHidControllerGetRightTrigger_t)();
-typedef       bool(*s3eHidControllerGetButtonX_t)();
-typedef       bool(*s3eHidControllerGetButtonY_t)();
-typedef       bool(*s3eHidControllerGetButtonA_t)();
-typedef       bool(*s3eHidControllerGetButtonB_t)();
-typedef       bool(*s3eHidControllerGetButtonDPadLeft_t)();
-typedef       bool(*s3eHidControllerGetButtonDPadRight_t)();
-typedef       bool(*s3eHidControllerGetButtonDPadUp_t)();
-typedef       bool(*s3eHidControllerGetButtonDPadDown_t)();
-typedef       bool(*s3eHidControllerGetButtonLShoulderDown_t)();
-typedef       bool(*s3eHidControllerGetButtonRShoulderDown_t)();
-typedef       bool(*s3eHidControllerGetButtonStart_t)();
-typedef       bool(*s3eHidControllerGetButtonSelect_t)();
 
-/**
- * struct that gets filled in by s3eHidControllerRegister
- */
-typedef struct s3eHidControllerFuncs
-{
-    s3eHidControllerIsConnected_t m_s3eHidControllerIsConnected;
-    s3eHidControllerUpdate_t m_s3eHidControllerUpdate;
-    s3eHidControllerGetStick1XAxis_t m_s3eHidControllerGetStick1XAxis;
-    s3eHidControllerGetStick1YAxis_t m_s3eHidControllerGetStick1YAxis;
-    s3eHidControllerGetStick2XAxis_t m_s3eHidControllerGetStick2XAxis;
-    s3eHidControllerGetStick2YAxis_t m_s3eHidControllerGetStick2YAxis;
-    s3eHidControllerGetLeftTrigger_t m_s3eHidControllerGetLeftTrigger;
-    s3eHidControllerGetRightTrigger_t m_s3eHidControllerGetRightTrigger;
-    s3eHidControllerGetButtonX_t m_s3eHidControllerGetButtonX;
-    s3eHidControllerGetButtonY_t m_s3eHidControllerGetButtonY;
-    s3eHidControllerGetButtonA_t m_s3eHidControllerGetButtonA;
-    s3eHidControllerGetButtonB_t m_s3eHidControllerGetButtonB;
-    s3eHidControllerGetButtonDPadLeft_t m_s3eHidControllerGetButtonDPadLeft;
-    s3eHidControllerGetButtonDPadRight_t m_s3eHidControllerGetButtonDPadRight;
-    s3eHidControllerGetButtonDPadUp_t m_s3eHidControllerGetButtonDPadUp;
-    s3eHidControllerGetButtonDPadDown_t m_s3eHidControllerGetButtonDPadDown;
-    s3eHidControllerGetButtonLShoulderDown_t m_s3eHidControllerGetButtonLShoulderDown;
-    s3eHidControllerGetButtonRShoulderDown_t m_s3eHidControllerGetButtonRShoulderDown;
-    s3eHidControllerGetButtonStart_t m_s3eHidControllerGetButtonStart;
-    s3eHidControllerGetButtonSelect_t m_s3eHidControllerGetButtonSelect;
-} s3eHidControllerFuncs;
+#include "s3eHidController_interface.h"
 
 static s3eHidControllerFuncs g_Ext;
 static bool g_GotExt = false;
@@ -121,19 +74,19 @@ bool s3eHidControllerIsConnected()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerIsConnected);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerIsConnected();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerIsConnected);
 #endif
 
     return ret;
 }
 
-bool s3eHidControllerUpdate(float dt)
+bool s3eHidControllerUpdate()
 {
     IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[1] func: s3eHidControllerUpdate"));
 
@@ -141,13 +94,13 @@ bool s3eHidControllerUpdate(float dt)
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerUpdate);
 #endif
 
-    bool ret = g_Ext.m_s3eHidControllerUpdate(dt);
+    bool ret = g_Ext.m_s3eHidControllerUpdate();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerUpdate);
 #endif
 
     return ret;
@@ -161,13 +114,13 @@ float s3eHidControllerGetStick1XAxis()
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick1XAxis);
 #endif
 
     float ret = g_Ext.m_s3eHidControllerGetStick1XAxis();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick1XAxis);
 #endif
 
     return ret;
@@ -181,13 +134,13 @@ float s3eHidControllerGetStick1YAxis()
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick1YAxis);
 #endif
 
     float ret = g_Ext.m_s3eHidControllerGetStick1YAxis();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick1YAxis);
 #endif
 
     return ret;
@@ -201,13 +154,13 @@ float s3eHidControllerGetStick2XAxis()
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick2XAxis);
 #endif
 
     float ret = g_Ext.m_s3eHidControllerGetStick2XAxis();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick2XAxis);
 #endif
 
     return ret;
@@ -221,13 +174,13 @@ float s3eHidControllerGetStick2YAxis()
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick2YAxis);
 #endif
 
     float ret = g_Ext.m_s3eHidControllerGetStick2YAxis();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetStick2YAxis);
 #endif
 
     return ret;
@@ -241,13 +194,13 @@ float s3eHidControllerGetLeftTrigger()
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetLeftTrigger);
 #endif
 
     float ret = g_Ext.m_s3eHidControllerGetLeftTrigger();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetLeftTrigger);
 #endif
 
     return ret;
@@ -261,13 +214,13 @@ float s3eHidControllerGetRightTrigger()
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetRightTrigger);
 #endif
 
     float ret = g_Ext.m_s3eHidControllerGetRightTrigger();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetRightTrigger);
 #endif
 
     return ret;
@@ -281,13 +234,13 @@ bool s3eHidControllerGetButtonX()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonX);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonX();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonX);
 #endif
 
     return ret;
@@ -301,13 +254,13 @@ bool s3eHidControllerGetButtonY()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonY);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonY();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonY);
 #endif
 
     return ret;
@@ -321,13 +274,13 @@ bool s3eHidControllerGetButtonA()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonA);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonA();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonA);
 #endif
 
     return ret;
@@ -341,13 +294,13 @@ bool s3eHidControllerGetButtonB()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonB);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonB();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonB);
 #endif
 
     return ret;
@@ -361,13 +314,13 @@ bool s3eHidControllerGetButtonDPadLeft()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadLeft);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonDPadLeft();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadLeft);
 #endif
 
     return ret;
@@ -381,13 +334,13 @@ bool s3eHidControllerGetButtonDPadRight()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadRight);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonDPadRight();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadRight);
 #endif
 
     return ret;
@@ -401,13 +354,13 @@ bool s3eHidControllerGetButtonDPadUp()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadUp);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonDPadUp();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadUp);
 #endif
 
     return ret;
@@ -421,13 +374,13 @@ bool s3eHidControllerGetButtonDPadDown()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadDown);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonDPadDown();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonDPadDown);
 #endif
 
     return ret;
@@ -441,13 +394,13 @@ bool s3eHidControllerGetButtonLShoulderDown()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonLShoulderDown);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonLShoulderDown();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonLShoulderDown);
 #endif
 
     return ret;
@@ -461,13 +414,13 @@ bool s3eHidControllerGetButtonRShoulderDown()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonRShoulderDown);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonRShoulderDown();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonRShoulderDown);
 #endif
 
     return ret;
@@ -481,13 +434,13 @@ bool s3eHidControllerGetButtonStart()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStart);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonStart();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStart);
 #endif
 
     return ret;
@@ -501,13 +454,73 @@ bool s3eHidControllerGetButtonSelect()
         return false;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonSelect);
 #endif
 
     bool ret = g_Ext.m_s3eHidControllerGetButtonSelect();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonSelect);
+#endif
+
+    return ret;
+}
+
+bool s3eHidControllerGetButtonStick1()
+{
+    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[20] func: s3eHidControllerGetButtonStick1"));
+
+    if (!_extLoad())
+        return false;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick1);
+#endif
+
+    bool ret = g_Ext.m_s3eHidControllerGetButtonStick1();
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick1);
+#endif
+
+    return ret;
+}
+
+bool s3eHidControllerGetButtonStick2()
+{
+    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[21] func: s3eHidControllerGetButtonStick2"));
+
+    if (!_extLoad())
+        return false;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick2);
+#endif
+
+    bool ret = g_Ext.m_s3eHidControllerGetButtonStick2();
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerGetButtonStick2);
+#endif
+
+    return ret;
+}
+
+bool s3eHidControllerUpdateLegacy(float dt)
+{
+    IwTrace(HIDCONTROLLER_VERBOSE, ("calling s3eHidController[22] func: s3eHidControllerUpdateLegacy"));
+
+    if (!_extLoad())
+        return false;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerUpdateLegacy);
+#endif
+
+    bool ret = g_Ext.m_s3eHidControllerUpdateLegacy(dt);
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_s3eHidControllerUpdateLegacy);
 #endif
 
     return ret;
